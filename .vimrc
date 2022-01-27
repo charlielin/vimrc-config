@@ -498,7 +498,7 @@ if g:rc_use_plug_manager
             Plug 'metakirby5/codi.vim'
         endif
         Plug 'ashfinal/vim-one'
-        if version >= 800 || has('nvim')
+        if (version >= 800 || has('nvim')) && filereadable(expand('~/.nodenv/shims/node'))
             Plug 'neoclide/coc.nvim', {'branch': 'release'}
         else
             if version >= 703 && has('lua')
