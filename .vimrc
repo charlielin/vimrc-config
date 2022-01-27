@@ -33,13 +33,17 @@ set ttyfast " Improves smoothness of redrawing
 set lazyredraw
 
 " No annoying sound on errors
-set noerrorbells
-set novisualbell
+"set noerrorbells
+"set novisualbell
 set t_vb=
 
 set t_Co=256 " using 256 colors
 set t_ti= t_te= " put terminal in 'termcap' mode
 set guicursor+=a:blinkon0 " no cursor blink
+
+"change cursor when entering insert mode
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
@@ -107,6 +111,7 @@ endif
 " Use these symbols for invisible chars
 set listchars=tab:¦\ ,eol:¬,trail:⋅,extends:»,precedes:«
 
+
 set foldlevel=100 " unfold all by default
 
 " }}} Environment - Encoding, Indent, Fold "
@@ -158,30 +163,32 @@ endif
 " Edit - Navigation, History, Search {{{ "
 
 " Map jk to enter normal mode
-imap jk <Esc>
+"imap jk <Esc>
 
+" Make curor top 5 line of the bottom
+set scrolloff=10
 " Make cursor always on center of screen by default
-if !exists('g:rc_always_center')
-    let g:rc_always_center = 1
-else
-    if g:rc_always_center == 0 | augroup! rc_always_center | endif
-endif
-
-augroup rc_always_center
-    autocmd!
-    autocmd VimEnter,WinEnter,VimResized * call RCAlwaysCenterOrNot()
-augroup END
-
-function! RCAlwaysCenterOrNot()
-    if g:rc_always_center
-        " Use <Enter> to keep center in insert mode, need proper scrolloff
-        let &scrolloff = float2nr(floor(winheight(0) / 2) + 1)
-        inoremap <CR> <CR><C-o>zz
-    else
-        let &scrolloff = 0
-        silent! iunmap <CR>
-    endif
-endfunction
+"if !exists('g:rc_always_center')
+"    let g:rc_always_center = 1
+"else
+"    if g:rc_always_center == 0 | augroup! rc_always_center | endif
+"endif
+"
+"augroup rc_always_center
+"    autocmd!
+"    autocmd VimEnter,WinEnter,VimResized * call RCAlwaysCenterOrNot()
+"augroup END
+"
+"function! RCAlwaysCenterOrNot()
+"    if g:rc_always_center
+"        " Use <Enter> to keep center in insert mode, need proper scrolloff
+"        let &scrolloff = float2nr(floor(winheight(0) / 2) + 1)
+"        inoremap <CR> <CR><C-o>zz
+"    else
+"        let &scrolloff = 0
+"        silent! iunmap <CR>
+"    endif
+"endfunction
 
 " Make moving around works well in multi lines
 map <silent> j gj
@@ -382,7 +389,7 @@ inoremap <c-w> <c-g>u<c-w>
 
 " }}} Key Mappings "
 
-" Misc {{{ "
+" Mis {{{ "
 
 set noshowcmd
 
@@ -497,7 +504,7 @@ if g:rc_use_plug_manager
         if !has('win32')
             Plug 'metakirby5/codi.vim'
         endif
-        Plug 'ashfinal/vim-one'
+        Plug 'morhetz/gruvbox'
         if (version >= 800 || has('nvim')) && filereadable(expand('~/.nodenv/shims/node'))
             Plug 'neoclide/coc.nvim', {'branch': 'release'}
         else
@@ -543,8 +550,8 @@ if g:rc_use_plug_manager && filereadable(expand("~/.vim/autoload/plug.vim"))
 
     " Plugin Config - onecolorscheme {{{ "
 
-    if filereadable(expand("~/.vim/plugged/vim-one/colors/one.vim"))
-        colorscheme one
+    if filereadable(expand("~/.vim/plugged/gruvbox/colors/gruvbox.vim"))
+        colorscheme gruvbox
         if has("gui_running") || has("gui_vimr")
             set background=light
         endif
