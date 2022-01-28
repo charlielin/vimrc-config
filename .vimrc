@@ -552,6 +552,7 @@ if g:rc_use_plug_manager && filereadable(expand("~/.vim/autoload/plug.vim"))
 
     if filereadable(expand("~/.vim/plugged/gruvbox/colors/gruvbox.vim"))
         colorscheme gruvbox
+        set background=light
         if has("gui_running") || has("gui_vimr")
             set background=light
         endif
