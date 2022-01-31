@@ -35,6 +35,7 @@ set lazyredraw
 " No annoying sound on errors
 "set noerrorbells
 "set novisualbell
+set visualbell
 set t_vb=
 
 set t_Co=256 " using 256 colors
@@ -49,7 +50,7 @@ let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 set backspace=eol,start,indent
 
 " In many terminal emulators the mouse works just fine, thus enable it.
-set mouse=a
+" set mouse=a
 
 " With a map leader it's possible to do extra key combinations
 let mapleader = "\<Space>"
@@ -99,7 +100,7 @@ set expandtab " Use spaces instead of tabs
 set wrap " Wrap lines
 
 " set iskeyword+=-
-set whichwrap+=<,>,h,l,[,]
+" set whichwrap+=<,>,h,l,[,]
 
 " clear vert split and empty lines fillchar
 if has('nvim')
@@ -129,6 +130,7 @@ set guioptions-=T " Also disable toolbar
 syntax enable
 
 set shortmess=aoOtTI " Abbrev. of messages
+set shortmess+=c
 
 " Highlight current line
 set cursorline
@@ -146,7 +148,7 @@ set number relativenumber
 set nospell
 
 " Height of the command bar
-set cmdheight=1
+set cmdheight=2
 " Turn on the Wild menu
 set wildmenu
 set wildmode=list:longest,full
@@ -286,6 +288,7 @@ set undolevels=1000
 if !isdirectory($HOME. "/.vim/undotree") | call mkdir($HOME . "/.vim/undotree", "p") | endif
 set undodir=$HOME/.vim/undotree//
 
+
 " For regular expressions turn magic on
 set magic
 
@@ -331,10 +334,10 @@ set splitbelow " Puts new split windows to the bottom of the current
 " Split management
 nnoremap <silent> [b :bprevious<cr>
 nnoremap <silent> ]b :bnext<cr>
-nnoremap <silent> <C-k> :resize +2<CR>
-nnoremap <silent> <C-j> :resize -2<CR>
-nnoremap <silent> <C-h> :vertical resize +4<CR>
-nnoremap <silent> <C-l> :vertical resize -4<CR>
+nnoremap <up> :resize +2<CR>
+nnoremap <down> <C-j> :resize -2<CR>
+nnoremap <left> <C-h> :vertical resize -4<CR>
+nnoremap <right> <C-l> :vertical resize +4<CR>
 
 " Always show status line
 set laststatus=2
@@ -387,6 +390,14 @@ inoremap <c-w> <c-g>u<c-w>
 " vnoremap <silent> <C-j> :m '>+1<CR>gv=gv
 " vnoremap <silent> <C-k> :m '<-2<CR>gv=gv
 
+" Tab management
+noremap tp :-tabnext<CR>
+noremap tn :+tabnext<CR>
+noremap tmn :-tabmove<CR>
+noremap tmi :+tabmove<CR>
+
+" Disable the default s key
+noremap s <nop>
 " }}} Key Mappings "
 
 " Mis {{{ "
@@ -469,10 +480,12 @@ if g:rc_use_plug_manager
     if filereadable(expand("~/.vim/autoload/plug.vim"))
         call plug#begin('~/.vim/plugged')
 
-        Plug 'bling/vim-airline'
+        Plug 'vim-airline/vim-airline'
+        Plug 'vim-airline/vim-airline-themes'
         if version >= 704 || version ==703 && has('patch005')
             Plug 'mbbill/undotree'
         endif
+        Plug 'preservim/nerdtree'
         Plug 'mattn/emmet-vim'
         Plug 'dhruvasagar/vim-table-mode'
         Plug 'machakann/vim-sandwich'
@@ -480,9 +493,9 @@ if g:rc_use_plug_manager
         Plug 'kshenoy/vim-signature'
         Plug 'scrooloose/nerdcommenter'
         Plug 'Raimondi/delimitMate'
-        if version >= 704 && has('python3')
-            Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-        endif
+        "if version >= 704 && has('python3')
+        "    Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+        "endif
         Plug 'junegunn/vim-easy-align'
         Plug 'junegunn/goyo.vim'
         Plug 'junegunn/limelight.vim'
@@ -512,9 +525,11 @@ if g:rc_use_plug_manager
                 Plug 'Shougo/neocomplete.vim'
             endif
         endif
-        if filereadable(expand("~/.vim/vimrc.plug"))
-            source $HOME/.vim/vimrc.plug
-        endif
+        "Plug 'ajmwagar/vim-deus'
+        "if filereadable(expand("~/.vim/vimrc.plug"))
+        "    source $HOME/.vim/vimrc.plug
+        "endif
+        Plug 'airblade/vim-gitgutter'
         call plug#end()
     else
         if executable('git')
@@ -533,7 +548,7 @@ if g:rc_use_plug_manager
             endif
             if filereadable(expand("~/.vim/autoload/plug.vim"))
                 echo "PluginManager - plug.vim just installed! vim will quit now.\nYou should relaunch vim, use PlugInstall to install plugins OR do nothing just use the basic config."
-                exe 'qall!'
+               exe 'qall!'
             endif
         else
             redir >> ~/.vim/vimrc.before | echom 'let g:rc_use_plug_manager = 0' | redir END
@@ -552,11 +567,24 @@ if g:rc_use_plug_manager && filereadable(expand("~/.vim/autoload/plug.vim"))
 
     if filereadable(expand("~/.vim/plugged/gruvbox/colors/gruvbox.vim"))
         colorscheme gruvbox
-        set background=light
+        set background=dark
+        set termguicolors
         if has("gui_running") || has("gui_vimr")
             set background=light
         endif
     endif
+
+    "if filereadable(expand("~/.vim/plugged/deus/colors/deus.vim"))
+    "    set t_Co=256
+    "    set termguicolors
+
+    "    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    "    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+
+    "    set background=dark    " Setting dark mode
+    "    colorscheme deus
+    "    let g:deus_termcolors=256
+    "endif
 
     " }}} Plugin Config - onecolorscheme "
 
@@ -572,14 +600,14 @@ if g:rc_use_plug_manager && filereadable(expand("~/.vim/autoload/plug.vim"))
 
     " Plugin Config - ultisnips {{{ "
 
-    if filereadable(expand("~/.vim/plugged/ultisnips/plugin/UltiSnips.vim"))
-        let g:UltiSnipsExpandTrigger = "<Tab>"
-        let g:UltiSnipsJumpForwardTrigger = "<Tab>"
-        let g:UltiSnipsJumpBackwardTrigger = "<S-Tab>"
-        let g:UltiSnipsEditSplit = "context"
-        if !isdirectory($HOME . "/.vim/UltiSnips") | call mkdir($HOME . "/.vim/UltiSnips", "p") | endif
-        let g:UltiSnipsSnippetsDir = "~/.vim/UltiSnips"
-    endif
+    "if filereadable(expand("~/.vim/plugged/ultisnips/plugin/UltiSnips.vim"))
+    "    let g:UltiSnipsExpandTrigger = "<Tab>"
+    "    let g:UltiSnipsJumpForwardTrigger = "<Tab>"
+    "    let g:UltiSnipsJumpBackwardTrigger = "<S-Tab>"
+    "    let g:UltiSnipsEditSplit = "context"
+    "    if !isdirectory($HOME . "/.vim/UltiSnips") | call mkdir($HOME . "/.vim/UltiSnips", "p") | endif
+    "    let g:UltiSnipsSnippetsDir = "~/.vim/UltiSnips"
+    "endif
 
     " }}} Plugin Config - ultisnips "
 
@@ -723,6 +751,21 @@ if g:rc_use_plug_manager && filereadable(expand("~/.vim/autoload/plug.vim"))
 
     " }}} Plugin Config - airline "
 
+    " Plugin Config - airline-themes {{{ "
+    if filereadable(expand("~/.vim/plugged/vim-airline-themes/plugin/airline-themes.vim"))
+        let g:airline_theme='base16_gruvbox_dark_hard'
+    endif
+
+    " }}} Plugin Config - airline-themes
+
+    " Plugin Config - airline-themes {{{ "
+
+    if file_readable(expand("~/.vimr/plugged/vim-airline-thems"))
+
+    endif
+
+    " }}} Plugin Config - airlien-themes "
+
     " Plugin Config - vimtex {{{ "
 
     if filereadable(expand("~/.vim/plugged/vimtex/autoload/vimtex.vim"))
@@ -765,9 +808,9 @@ if g:rc_use_plug_manager && filereadable(expand("~/.vim/autoload/plug.vim"))
     let g:VM_leader = {'default': '<Leader>', 'visual': '<Leader>', 'buffer': 'z'}
     let g:VM_maps                           = {}
     let g:VM_maps["Get Operator"]           = '<Leader>a'
-    let g:VM_maps["Add Cursor At Pos"]      = '<Leader><Space>'
+    "let g:VM_maps["Add Cursor At Pos"]      = '<Leader><Space>'
     let g:VM_maps["Reselect Last"]          = '<Leader>z'
-    let g:VM_maps["Visual Cursors"]         = '<Leader><Space>'
+    "let g:VM_maps["Visual Cursors"]         = '<Leader><Space>'
     let g:VM_maps["Undo"]                   = 'u'
     let g:VM_maps["Redo"]                   = '<C-r>'
     let g:VM_maps["Visual Subtract"]        = 'zs'
@@ -781,10 +824,8 @@ if g:rc_use_plug_manager && filereadable(expand("~/.vim/autoload/plug.vim"))
         " Remap keys for gotos
         nmap <silent> gd <Plug>(coc-definition)
         nmap <silent> gy <Plug>(coc-type-definition)
-        nmap <silent> gl <Plug>(coc-implementation)
+        nmap <silent> gi <Plug>(coc-implementation)
         nmap <silent> gr <Plug>(coc-references)
-        nmap <silent> g= <Plug>(coc-format)
-        vmap <silent> g= <Plug>(coc-format-selected)
         " Remap for rename current word
         nmap gm <Plug>(coc-rename)
         " Show documentation in preview window
@@ -792,6 +833,86 @@ if g:rc_use_plug_manager && filereadable(expand("~/.vim/autoload/plug.vim"))
         nmap <silent> gc :CocList diagnostics<CR>
         nmap <silent> go :CocList outline<CR>
         nmap <silent> gs :CocList -I symbols<CR>
+
+        " Always show the signcolumn, otherwise it would shift the text each time
+        " diagnostics appear/become resolved.
+        if has("nvim-0.5.0") || has("patch-8.1.1564")
+          " Recently vim can merge signcolumn and number column into one
+          set signcolumn=number
+        else
+          set signcolumn=yes
+        endif
+
+        " Make <CR> auto-select the first completion item and notify coc.nvim to
+        " format on enter, <cr> could be remapped by other vim plugin
+        inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                                      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+        " Use tab for trigger completion with characters ahead and navigate.
+        " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+        " other plugin before putting this into your config.
+        "inoremap <silent><expr> <TAB>
+        "      \ pumvisible() ? "\<C-n>" :
+        "      \ <SID>check_back_space() ? "\<TAB>" :
+        "      \ coc#refresh()
+        "inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+        "function! s:check_back_space() abort
+        "  let col = col('.') - 1
+        "  return !col || getline('.')[col - 1]  =~# '\s'
+        "endfunction
+
+        " Use `[g` and `]g` to navigate diagnostics
+        " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+        nmap <silent> [g <Plug>(coc-diagnostic-prev)
+        nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+        " Use K to show documentation in preview window.
+        nnoremap <silent> K :call <SID>show_documentation()<CR>
+        function! s:show_documentation()
+          if (index(['vim','help'], &filetype) >= 0)
+            execute 'h '.expand('<cword>')
+          elseif (coc#rpc#ready())
+            call CocActionAsync('doHover')
+          else
+            execute '!' . &keywordprg . " " . expand('<cword>')
+          endif
+        endfunction
+
+        " Highlight the symbol and its references when holding the cursor.
+        autocmd CursorHold * silent call CocActionAsync('highlight')
+
+        " Symbol renaming.
+        nmap <leader>rn <Plug>(coc-rename)
+
+        " Formatting selected code.
+        xmap <leader>f  <Plug>(coc-format-selected)
+        nmap <leader>f  <Plug>(coc-format-selected)
+        augroup mygroup
+          autocmd!
+          " Setup formatexpr specified filetype(s).
+          autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+          " Update signature help on jump placeholder.
+          autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+        augroup end
+        " Remap <C-f> and <C-b> for scroll float windows/popups.
+        if has('nvim-0.4.0') || has('patch-8.2.0750')
+          nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+          nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+          inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+          inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+          vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+          vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+        endif
+
+        " Use CTRL-S for selections ranges.
+        " Requires 'textDocument/selectionRange' support of language server.
+        nmap <silent> <C-s> <Plug>(coc-range-select)
+        xmap <silent> <C-s> <Plug>(coc-range-select)
+" Add (Neo)Vim's native statusline support.
+" NOTE: Please see `:h coc-status` for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline.
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
     endif
 
     " }}} Plugin Config - coc.nvim "
@@ -825,3 +946,9 @@ if filereadable(expand("~/.vim/vimrc.after"))
 endif
 
 " vim:set et sw=4 ts=4 fdm=marker fdl=1 noma:
+
+" Other stuff {{{ "
+" Press space twice to jump to the next '<++>' and edit it
+noremap <LEADER><LEADER> <Esc>/<++><CR>:nohlsearch<CR>c4l
+" }}} Other stuff
+"
