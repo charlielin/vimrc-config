@@ -94,6 +94,7 @@ filetype plugin indent on
 set shiftwidth=4
 set tabstop=4
 set smarttab
+    autocmd FileType json setlocal et sta sw=2 sts=2
 
 set expandtab " Use spaces instead of tabs
 
@@ -332,8 +333,8 @@ set splitright " Puts new vsplit windows to the right of the current
 set splitbelow " Puts new split windows to the bottom of the current
 
 " Split management
-nnoremap <silent> [b :bprevious<cr>
-nnoremap <silent> ]b :bnext<cr>
+"nnoremap <silent> [b :bprevious<cr>
+"nnoremap <silent> ]b :bnext<cr>
 nnoremap <up> :resize +2<CR>
 nnoremap <down> <C-j> :resize -2<CR>
 nnoremap <left> <C-h> :vertical resize -4<CR>
@@ -398,6 +399,9 @@ noremap tmi :+tabmove<CR>
 
 " Disable the default s key
 noremap s <nop>
+
+" Copy to system clipboard
+vnoremap ys "+y
 " }}} Key Mappings "
 
 " Mis {{{ "
@@ -506,6 +510,7 @@ if g:rc_use_plug_manager
         if version >= 800 || has('nvim')
             Plug 'skywind3000/asyncrun.vim'
             Plug 'mg979/vim-visual-multi'
+            Plug 'voldikss/vim-floaterm'
         endif
         Plug 't9md/vim-textmanip'
         if executable('ctags')
@@ -530,6 +535,9 @@ if g:rc_use_plug_manager
         "    source $HOME/.vim/vimrc.plug
         "endif
         Plug 'airblade/vim-gitgutter'
+        Plug 'elzr/vim-json'
+        Plug 'mg979/vim-xtabline'
+        Plug 'ryanoasis/vim-devicons'
         call plug#end()
     else
         if executable('git')
@@ -818,6 +826,17 @@ if g:rc_use_plug_manager && filereadable(expand("~/.vim/autoload/plug.vim"))
 
     " }}} Plugin Config - visual-multi "
 
+    " Plugin Config - vim-gitgutter.nvim {{{ "
+
+    if filereadable(expand("~/.vim/plugged/vim-gitgutter/plugin/gitgutter.vim"))
+        let g:gitgutter_sign_allow_clobber = 0
+        let g:gitgutter_map_keys = 0
+        let g:gitgutter_override_sign_column_highlight = 0
+        let g:gitgutter_preview_win_floating = 1
+    endif
+
+    " }}} Plugin Config - vim-gitgutter"
+
     " Plugin Config - coc.nvim {{{ "
 
     if filereadable(expand("~/.vim/plugged/coc.nvim/plugin/coc.vim"))
@@ -838,7 +857,7 @@ if g:rc_use_plug_manager && filereadable(expand("~/.vim/autoload/plug.vim"))
         " diagnostics appear/become resolved.
         if has("nvim-0.5.0") || has("patch-8.1.1564")
           " Recently vim can merge signcolumn and number column into one
-          set signcolumn=number
+          "set signcolumn=number
         else
           set signcolumn=yes
         endif
@@ -886,8 +905,8 @@ if g:rc_use_plug_manager && filereadable(expand("~/.vim/autoload/plug.vim"))
         nmap <leader>rn <Plug>(coc-rename)
 
         " Formatting selected code.
-        xmap <leader>f  <Plug>(coc-format-selected)
-        nmap <leader>f  <Plug>(coc-format-selected)
+        " xmap <leader>f  <Plug>(coc-format-selected)
+        " nmap <leader>f  <Plug>(coc-format-selected)
         augroup mygroup
           autocmd!
           " Setup formatexpr specified filetype(s).
@@ -933,6 +952,26 @@ set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
     endif
 
     " }}} Plugin Config - tagbar "
+
+    " Plugin Config - nerdtree {{{ "
+    if filereadable(expand("~/.vim/plugged/nerdtree/autoload/nerdtree.vim"))
+        nnoremap <silent> <Leader>n :NERDTreeToggle<CR>
+
+    endif
+    " }}} Plugin Config - nerdtree
+
+    " Plugin Config - floaterm {{{ "
+    if filereadable(expand("~/.vim/plugged/vim-floaterm/autoload/floaterm.vim"))
+        " hi Floaterm guibg=black
+        " hi FloatermBorder guibg=none guifg=cyan
+        let g:floaterm_position = 'center'
+        let g:floaterm_wintype = 'floating'
+        " noremap <LEADER>ftn :FloatermNew<CR>
+        " noremap <LEADER>ftk :FloatermKill<CR>
+        nnoremap <silent> <Leader>te :FloatermToggle<CR>
+    endif
+
+    " }}} Plugin Config - floaterm
 
 endif
 
